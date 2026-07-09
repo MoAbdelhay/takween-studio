@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TAKWEEN — Design &amp; Engineering Services, rendered in light</title>
+<meta name="description" content="TAKWEEN is a design and engineering studio in five services: AutoCAD 2D technical drawings, 3D building design in Revit, Lumion and 3ds Max, data analysis and visualization, and web development. Each service is rendered live as a point-cloud sculpture assembling from dust." />
+<meta property="og:title" content="TAKWEEN — Design &amp; Engineering Services" />
+<meta property="og:description" content="Five services, priced in Saudi Riyals, each one reconstructed from thousands of points of drifting light as you scroll." />
+<meta name="theme-color" content="#0b0a0c" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0a0c'/%3E%3Cg fill='%23efe7d6'%3E%3Ccircle cx='16' cy='7' r='1.1'/%3E%3Ccircle cx='11' cy='12' r='1'/%3E%3Ccircle cx='21' cy='12' r='1'/%3E%3Ccircle cx='16' cy='14' r='1.2'/%3E%3Ccircle cx='13' cy='19' r='1'/%3E%3Ccircle cx='19' cy='19' r='1'/%3E%3Ccircle cx='16' cy='24' r='1.1'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%2345d6c0' stroke-width='0.6' opacity='0.7'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./style.css?v=7" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- fixed WebGL stage — the studio floor -->
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="webgl-fallback" id="fallback" hidden>
+  <p data-i18n="fallback">Your browser could not open the studio.<br />TAKWEEN needs WebGL to render its services in light.</p>
+</div>
+
+<!-- focus vignette that pulses when you hold to focus -->
+<div class="focus-ring" id="focusRing" aria-hidden="true"></div>
+
+<!-- focus readout — appears while holding to focus -->
+<div class="focus-hud" id="focusHud" aria-hidden="true">
+  <span class="fh-dot"></span>
+  <span class="fh-label" data-i18n="fh-label">focusing</span>
+  <span class="fh-sub" data-i18n="fh-sub">points converging</span>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Takween — return to the top">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-word" data-i18n="brand">TAKWEEN</span>
+  </a>
+  <p class="topbar-sub" data-i18n="topbar-sub">Design &amp; Engineering Studio · Services in Light</p>
+  <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">عربي</button>
+  <p class="topbar-idx" id="hallIdx">00 / 05</p>
+</header>
+
+<!-- scroll cue -->
+<div class="scroll-cue" id="scrollCue" aria-hidden="true">
+  <span class="cue-word" data-i18n="cue">descend</span>
+  <span class="cue-line"></span>
+</div>
+
+<main id="hall">
+
+  <!-- ————— INTAKE — the brand name floats above, drawn in dust ————— -->
+  <section class="panel panel-intro" data-exhibit="intro">
+    <div class="intro-inner">
+      <h1 class="intro-title">
+        <span class="line" data-i18n="i-t1">First a sketch,</span>
+        <span class="line ital" data-i18n="i-t2">then a model,</span>
+        <span class="line" data-i18n="i-t3">then the real thing.</span>
+      </h1>
+      <p class="intro-lede" data-i18n="i-lede">
+        TAKWEEN is a design and engineering studio in five services. The name
+        floating above is drawn from forty-six thousand points of light —
+        scroll, and they will reassemble into everything we make: a floor
+        plan, a tower, a chart, a globe.
+      </p>
+      <div class="intro-actions">
+        <a class="intro-cta" href="#sv-2d" data-i18n="i-cta1">Explore the services ↓</a>
+        <a class="intro-cta ghost" href="https://wa.me/966564709276?text=New%20project%20—%20TAKWEEN" target="_blank" rel="noopener" data-i18n="i-cta2">Start a project →</a>
+      </div>
+      <ul class="intro-stats" aria-label="Studio at a glance">
+        <li><strong>05</strong><span data-i18n="i-st1">services, one studio</span></li>
+        <li><strong>299</strong><span data-i18n="i-st2">SAR — prices start from</span></li>
+        <li><strong>46K</strong><span data-i18n="i-st3">points of light, rendering now</span></li>
+      </ul>
+      <p class="intro-note" data-i18n="i-note">
+        Move your cursor to stir the air. <em>Press and hold</em> to focus — the
+        points draw close and sharpen, the way a project does when the right
+        people finally look at it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ————— SERVICE I — 2D DRAWINGS ————— -->
+  <section class="panel panel-exhibit" data-exhibit="plan" id="sv-2d">
+    <figure class="plaque plaque-left" data-acc="TKW·001·2D">
+      <p class="plaque-num" data-i18n="s1-num">Service I</p>
+      <h2 class="plaque-title" data-i18n="s1-title">2D Technical Drawings</h2>
+      <p class="plaque-meta">
+        <span data-i18n="s1-m1">AutoCAD · Architectural / Mechanical / Electrical</span>
+        <span data-i18n="s1-m2">Lighting layouts &amp; schedules</span>
+        <span data-i18n="s1-m3">Delivered as DWG + PDF</span>
+      </p>
+      <div class="plaque-rule" aria-hidden="true"></div>
+      <p class="plaque-body" data-i18n="s1-body">
+        Architectural plans, mechanical and electrical layouts, and lighting
+        drawings, drafted in AutoCAD to submission standard. Clean layers, true
+        dimensions, and title blocks that pass review the first time. These are
+        the sheets a building is argued into existence with — every wall, duct,
+        and circuit accounted for before anyone pours concrete.
+      </p>
+      <p class="plaque-price">999 <span data-i18n="sar">SAR</span><em data-i18n="riyals">Saudi Riyals</em></p>
+      <p class="plaque-tag" data-i18n="s1-tag">AutoCAD 2D drafting · plan, section &amp; detail sheets</p>
+    </figure>
+  </section>
+
+  <!-- ————— SERVICE II — 3D DESIGN ————— -->
+  <section class="panel panel-exhibit" data-exhibit="tower" id="sv-3d">
+    <figure class="plaque plaque-right" data-acc="TKW·002·3D">
+      <p class="plaque-num" data-i18n="s2-num">Service II</p>
+      <h2 class="plaque-title" data-i18n="s2-title">3D Building Design</h2>
+      <p class="plaque-meta">
+        <span data-i18n="s2-m1">Revit · Lumion · 3ds Max</span>
+        <span data-i18n="s2-m2">BIM modelling &amp; photoreal rendering</span>
+        <span data-i18n="s2-m3">Exteriors, interiors &amp; walkthroughs</span>
+      </p>
+      <div class="plaque-rule" aria-hidden="true"></div>
+      <p class="plaque-body" data-i18n="s2-body">
+        Your building, standing before it exists. Modelled in Revit for
+        accuracy, then lit and rendered in Lumion and 3ds Max for atmosphere —
+        sun studies, materials, landscaping, the way the facade catches light
+        at five in the afternoon. Made for client presentations, marketing,
+        and the design decisions that become easy once you can see the answer.
+      </p>
+      <p class="plaque-price">1999 <span data-i18n="sar">SAR</span><em data-i18n="riyals">Saudi Riyals</em></p>
+      <p class="plaque-tag" data-i18n="s2-tag">Revit + Lumion + 3ds Max · stills &amp; animation</p>
+    </figure>
+  </section>
+
+  <!-- ————— SERVICE III — 2D + 3D ————— -->
+  <section class="panel panel-exhibit" data-exhibit="combo" id="sv-complete">
+    <figure class="plaque plaque-left" data-acc="TKW·003·2D3D">
+      <p class="plaque-num" data-i18n="s3-num">Service III</p>
+      <h2 class="plaque-title" data-i18n="s3-title">The Complete Set — 2D + 3D</h2>
+      <p class="plaque-meta">
+        <span data-i18n="s3-m1">Everything in Services I &amp; II</span>
+        <span data-i18n="s3-m2">One coordinated model, one team</span>
+        <span data-i18n="s3-m3">Best value · save 300 SAR</span>
+      </p>
+      <div class="plaque-rule" aria-hidden="true"></div>
+      <p class="plaque-body" data-i18n="s3-body">
+        The full arc: technical drawings and 3D visualisation produced
+        together, so they can never disagree. The plan you submit and the
+        render you present come from one coordinated model — change a wall
+        once and it changes everywhere. This is the package for taking a
+        project from first sketch to final approval without anything getting
+        lost in between.
+      </p>
+      <p class="plaque-price">1799 <span data-i18n="sar">SAR</span><em data-i18n="riyals">Saudi Riyals</em></p>
+      <p class="plaque-tag" data-i18n="s3-tag">2D drawings + 3D design · one coordinated package</p>
+    </figure>
+  </section>
+
+  <!-- ————— SERVICE IV — DATA ————— -->
+  <section class="panel panel-exhibit" data-exhibit="chart" id="sv-data">
+    <figure class="plaque plaque-right" data-acc="TKW·004·DATA">
+      <p class="plaque-num" data-i18n="s4-num">Service IV</p>
+      <h2 class="plaque-title" data-i18n="s4-title">Data Analysis &amp; Visualization</h2>
+      <p class="plaque-meta">
+        <span data-i18n="s4-m1">Analysis · dashboards · professional reports</span>
+        <span data-i18n="s4-m2">From raw data to decision</span>
+        <span data-i18n="s4-m3">Charts that earn their place</span>
+      </p>
+      <div class="plaque-rule" aria-hidden="true"></div>
+      <p class="plaque-body" data-i18n="s4-body">
+        Raw spreadsheets go in; a decision comes out. We clean, analyse, and
+        visualise your data, then deliver it as professional reports and
+        dashboards that people actually read. Every chart earns its place,
+        every number is traceable back to its source, and the story your data
+        has been trying to tell finally gets told.
+      </p>
+      <p class="plaque-price">299 <span data-i18n="sar">SAR</span><em data-i18n="riyals">Saudi Riyals</em></p>
+      <p class="plaque-tag" data-i18n="s4-tag">Analysis + visualization + professional reporting</p>
+    </figure>
+  </section>
+
+  <!-- ————— SERVICE V — WEB ————— -->
+  <section class="panel panel-exhibit" data-exhibit="globe" id="sv-web">
+    <figure class="plaque plaque-left" data-acc="TKW·005·WEB">
+      <p class="plaque-num" data-i18n="s5-num">Service V</p>
+      <h2 class="plaque-title" data-i18n="s5-title">Web Development</h2>
+      <p class="plaque-meta">
+        <span data-i18n="s5-m1">Design + build · responsive · fast</span>
+        <span data-i18n="s5-m2">Landing pages to full sites</span>
+        <span data-i18n="s5-m3">Like the one you are looking at</span>
+      </p>
+      <div class="plaque-rule" aria-hidden="true"></div>
+      <p class="plaque-body" data-i18n="s5-body">
+        Websites designed and built end to end — responsive, fast, and made to
+        feel like something rather than nothing. This page is its own
+        portfolio piece: tens of thousands of points of light rendering live
+        in your browser while you read this sentence. If a website can do
+        this, imagine what yours could do.
+      </p>
+      <p class="plaque-price">1999 <span data-i18n="sar">SAR</span><em data-i18n="riyals">Saudi Riyals</em></p>
+      <p class="plaque-tag" data-i18n="s5-tag">Design + development · deployed &amp; handed over</p>
+    </figure>
+  </section>
+
+  <!-- ————— EXIT ————— -->
+  <section class="panel panel-outro" data-exhibit="outro">
+    <div class="outro-inner">
+      <p class="kicker" data-i18n="o-kicker">End of catalogue</p>
+      <h2 class="outro-title" data-i18n="o-title">Let&rsquo;s build yours.</h2>
+      <p class="outro-body" data-i18n="o-body">
+        Five services, one studio. Send a message with what you are making and
+        you will get back a plan, a price, and a timeline. Every project starts
+        the same way this page did — with nothing, and then a first point of
+        light.
+      </p>
+      <div class="outro-actions">
+        <a class="outro-cta" href="https://wa.me/966564709276?text=New%20project%20—%20TAKWEEN" target="_blank" rel="noopener" data-i18n="o-cta">Start a project →</a>
+        <a class="outro-alt" href="#sv-2d" data-i18n="o-alt">Return to Service I</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="credit">
+  <span data-i18n="f-left">TAKWEEN · design &amp; engineering services</span>
+  <a class="credit-build" href="#top" onclick="scrollTo({top:0,behavior:'smooth'});return false;" data-i18n="f-top">back to the top ↑</a>
+</footer>
+
+<div class="live" id="live" aria-live="polite"></div>
+
+<!-- ————— i18n: English is captured from the DOM, Arabic lives here ————— -->
+<script>
+(function () {
+  var AR = {
+    'brand': 'تكوين',
+    'topbar-sub': 'استوديو تصميم وهندسة · خدمات من ضوء',
+    'cue': 'انزل',
+    'fh-label': 'تركيز',
+    'fh-sub': 'النقاط تتقارب',
+    'fallback': 'متصفحك لم يستطع فتح الاستوديو.<br />يحتاج «تكوين» إلى WebGL ليرسم خدماته بالضوء.',
+
+    'i-t1': 'نرسمها.',
+    'i-t2': 'نجسّمها.',
+    'i-t3': 'نطلقها.',
+    'i-lede': '«تكوين» استوديو تصميم وهندسة في خمس خدمات. الاسم الذي يطفو أعلى الصفحة مرسوم من ستةٍ وأربعين ألف نقطة ضوء — انزل، وستُعاد هذه النقاط تشكيلها إلى كل ما نصنعه: مخطط، وبرج، ورسم بياني، وكرة أرضية.',
+    'i-note': 'حرّك المؤشر لتحريك الهواء. <em>اضغط مطولًا</em> للتركيز — تقترب النقاط وتزداد وضوحًا، كما يتّضح المشروع حين ينظر إليه أصحابه أخيرًا.',
+    'i-cta1': 'استكشف الخدمات ↓',
+    'i-cta2': 'ابدأ مشروعًا ←',
+    'i-st1': 'خدمات، استوديو واحد',
+    'i-st2': 'ريال سعودي — تبدأ الأسعار من',
+    'i-st3': 'نقطة ضوء تُرسم الآن',
+
+    'sar': 'ر.س',
+    'riyals': 'ريال سعودي',
+
+    's1-num': 'الخدمة الأولى',
+    's1-title': 'رسومات تنفيذية ثنائية الأبعاد',
+    's1-m1': 'أوتوكاد · معماري / ميكانيكي / كهربائي',
+    's1-m2': 'مخططات الإنارة وجداولها',
+    's1-m3': 'التسليم بصيغة DWG + PDF',
+    's1-body': 'مخططات معمارية وتمديدات ميكانيكية وكهربائية ومخططات إنارة، مرسومة على أوتوكاد بمستوى جاهز للاعتماد. طبقات نظيفة، وأبعاد حقيقية، وجداول بيانات تجتاز المراجعة من أول مرة. هذه هي الأوراق التي تولد بها المباني — كل جدار ومجرى ودائرة كهربائية محسوبة قبل صبّ الخرسانة.',
+    's1-tag': 'رسم أوتوكاد ثنائي الأبعاد · مساقط وقطاعات وتفاصيل',
+
+    's2-num': 'الخدمة الثانية',
+    's2-title': 'تصميم المباني ثلاثي الأبعاد',
+    's2-m1': 'ريفيت · لوميون · ثري دي ماكس',
+    's2-m2': 'نمذجة BIM وإخراج واقعي',
+    's2-m3': 'واجهات وتصاميم داخلية وجولات افتراضية',
+    's2-body': 'مبناك واقفًا قبل أن يوجد. نُنمذجه في ريفيت للدقة، ثم نضيئه ونخرجه في لوميون وثري دي ماكس — دراسات شمس، وخامات، وتنسيق موقع، وكيف تلتقط الواجهة الضوء في الخامسة عصرًا. مثالي للعروض على العملاء وللتسويق ولقرارات التصميم التي تصبح سهلة حين ترى الجواب أمامك.',
+    's2-tag': 'ريفيت + لوميون + ثري دي ماكس · صور ثابتة وتحريك',
+
+    's3-num': 'الخدمة الثالثة',
+    's3-title': 'الحزمة الكاملة — 2D + 3D',
+    's3-m1': 'كل ما في الخدمتين الأولى والثانية',
+    's3-m2': 'نموذج واحد منسّق وفريق واحد',
+    's3-m3': 'أفضل قيمة · وفّر 300 ريال',
+    's3-body': 'القوس الكامل: الرسومات التنفيذية والتصور ثلاثي الأبعاد يُنتَجان معًا فلا يختلفان أبدًا. المخطط الذي تقدّمه والصورة التي تعرضها يخرجان من نموذج واحد منسّق — عدّل جدارًا مرة واحدة فيتعدّل في كل مكان. هذه حزمة من يريد أخذ مشروعه من أول رسمة إلى الاعتماد النهائي دون أن يضيع شيء في الطريق.',
+    's3-tag': 'رسومات ثنائية الأبعاد + تصميم ثلاثي الأبعاد · حزمة واحدة منسّقة',
+
+    's4-num': 'الخدمة الرابعة',
+    's4-title': 'تحليل البيانات وعرضها',
+    's4-m1': 'تحليل · لوحات بيانات · تقارير احترافية',
+    's4-m2': 'من البيانات الخام إلى القرار',
+    's4-m3': 'رسوم بيانية تستحق مكانها',
+    's4-body': 'تدخل الجداول الخام؛ ويخرج قرار. ننظّف بياناتك ونحللها ونحوّلها إلى تقارير احترافية ولوحات بيانات يقرؤها الناس فعلًا. كل رسم بياني يستحق مكانه، وكل رقم يمكن تتبّعه إلى مصدره، والقصة التي كانت بياناتك تحاول أن ترويها تُروى أخيرًا.',
+    's4-tag': 'تحليل + عرض بيانات + تقارير احترافية',
+
+    's5-num': 'الخدمة الخامسة',
+    's5-title': 'تطوير المواقع',
+    's5-m1': 'تصميم وبناء · متجاوب · سريع',
+    's5-m2': 'من صفحات الهبوط إلى المواقع الكاملة',
+    's5-m3': 'مثل الموقع الذي تنظر إليه الآن',
+    's5-body': 'مواقع تُصمَّم وتُبنى من البداية إلى النهاية — متجاوبة وسريعة ولها روح. هذه الصفحة نفسها نموذج من أعمالنا: عشرات الآلاف من نقاط الضوء تُرسم مباشرة في متصفحك وأنت تقرأ هذه الجملة. إذا كان موقع يستطيع هذا، فتخيّل ما يستطيعه موقعك.',
+    's5-tag': 'تصميم + تطوير · تسليم كامل مع النشر',
+
+    'o-kicker': 'نهاية الدليل',
+    'o-title': 'لنبنِ مشروعك.',
+    'o-body': 'خمس خدمات، استوديو واحد. أرسل رسالة تصف ما تريد صنعه وستصلك خطة وسعر وجدول زمني. كل مشروع يبدأ كما بدأت هذه الصفحة — من لا شيء، ثم نقطة ضوء أولى.',
+    'o-cta': 'ابدأ مشروعًا ←',
+    'o-alt': 'عودة إلى الخدمة الأولى',
+
+    'f-left': 'تكوين · خدمات تصميم وهندسة',
+    'f-top': 'العودة إلى الأعلى ↑'
+  };
+  var TITLES = {
+    en: 'TAKWEEN — Design & Engineering Services, rendered in light',
+    ar: 'تكوين — خدمات تصميم وهندسة، مرسومة بالضوء'
+  };
+
+  // capture the English strings straight from the markup
+  var EN = {};
+  var nodes = document.querySelectorAll('[data-i18n]');
+  nodes.forEach(function (el) {
+    var k = el.dataset.i18n;
+    if (!(k in EN)) EN[k] = el.innerHTML;
+  });
+
+  var btn = document.getElementById('langToggle');
+
+  function apply(lang) {
+    var dict = lang === 'ar' ? AR : EN;
+    nodes.forEach(function (el) {
+      var k = el.dataset.i18n;
+      if (dict[k] != null) el.innerHTML = dict[k];
+    });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.title = TITLES[lang];
+    btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
+    btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
+    try { localStorage.setItem('takween-lang', lang); } catch (e) {}
+    // tell the WebGL layer to redraw the hero wordmark in the right script
+    window.dispatchEvent(new CustomEvent('takween:lang', { detail: lang }));
+  }
+
+  btn.addEventListener('click', function () {
+    apply(document.documentElement.lang === 'ar' ? 'en' : 'ar');
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem('takween-lang'); } catch (e) {}
+  if (saved === 'ar') apply('ar');
+})();
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="./app.js?v=6"></script>
+</body>
+</html>
