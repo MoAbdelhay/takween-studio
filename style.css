@@ -346,6 +346,21 @@ html[lang="ar"] .plaque-body { font-size: 1.02rem; line-height: 1.9; }
   font-style: italic; font-size: 0.38em; color: var(--bone-faint);
   letter-spacing: 0.06em;
 }
+/* the call-to-action — a filled pill that replaces the price */
+.plaque-cta {
+  display: inline-flex; align-items: center; align-self: flex-start;
+  font-family: var(--font-sans); font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--hall); background: var(--accent);
+  padding: 0.85rem 1.7rem; border: 1px solid var(--accent);
+  border-radius: 999px; margin-bottom: 1.2rem;
+  transition: all 0.5s var(--ease);
+}
+.plaque-cta:hover {
+  box-shadow: 0 0 34px -4px rgba(69,214,192,0.65);
+  transform: translateY(-2px);
+}
+html[lang="ar"] .plaque-cta { letter-spacing: 0; font-size: 0.82rem; }
 .plaque-tag {
   font-family: var(--font-sans);
   font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
