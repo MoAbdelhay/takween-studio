@@ -127,6 +127,8 @@ function boot() {
     const pts = [];
     const m = filled.length/2 || 1;
     const S = 5.2/cw;                       // world units per canvas pixel
+    let maxRow = ch/2;
+    for (let k = 1; k < filled.length; k += 2) if (filled[k] > maxRow) maxRow = filled[k];
     for (let i = 0; i < HERO_N; i++) {
       const k = (Math.random()*m) | 0;
       const X = (filled[k*2]   - cw/2) * S + (Math.random()-0.5)*0.013;
@@ -134,7 +136,9 @@ function boot() {
       // a gentle standing wave in depth so the flat glyphs catch parallax
       pts.push(X, Y, Math.sin(X*1.6)*0.07 + (Math.random()-0.5)*0.09);
     }
-    return toCloud(pts);
+    const cloud = toCloud(pts);
+    cloud.bottom = -(maxRow - ch/2) * S;    // lowest glyph point, world units
+    return cloud;
   }
   const heroFont = l => l === 'ar' ? '700 205px "Cairo", sans-serif' : '500 172px "Space Grotesk", sans-serif';
   const heroText = l => l === 'ar' ? 'تكوين' : 'TAKWEEN';
@@ -608,11 +612,25 @@ function boot() {
   // vertical offset per exhibit: the hero wordmark floats in the upper band,
   // the sculptures sit centred (or lifted above the card on narrow screens).
   // points.position.y eases toward this in the render loop.
-  // the Arabic intro has no headline, so its copy block is shorter:
-  // drop the wordmark closer to it instead of leaving a gap
-  const AR_HERO_LIFT = 0.78;
-  const heroScale = (idx) => (idx === 0 && pageLang() === 'ar') ? AR_HERO_LIFT : 1;
-  const liftFor = (idx) => (isNarrow() ? 1.35 : 0) + exhibits[idx].lift * heroScale(idx) * (isNarrow() ? 0.45 : 1);
+  const baseLift = (idx) => (isNarrow() ? 1.35 : 0) + exhibits[idx].lift * (isNarrow() ? 0.45 : 1);
+  // The Arabic intro has no headline, so its copy block is shorter. Measure
+  // where the description starts and sit the wordmark a fixed gap above it,
+  // so the spacing is the same on every screen size. Never raise it higher
+  // than the default berth.
+  const AR_HERO_GAP = 28;                   // px between glyphs and description
+  let arHeroLift = null;
+  function measureArHero() {
+    arHeroLift = null;
+    if (pageLang() !== 'ar' || clouds[0].bottom == null) return;
+    const lede = document.querySelector('.intro-lede');
+    if (!lede) return;
+    let top = 0;
+    for (let el = lede; el; el = el.offsetParent) top += el.offsetTop;
+    const worldPerPx = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / innerHeight;
+    const targetY = (innerHeight / 2 - (top - AR_HERO_GAP)) * worldPerPx;
+    arHeroLift = Math.min(baseLift(0), targetY - clouds[0].bottom);
+  }
+  const liftFor = (idx) => (idx === 0 && arHeroLift != null) ? arHeroLift : baseLift(idx);
   function layoutOffset() {
     plinth.position.set(0, isNarrow() ? 1.35 : 0, 0);
   }
@@ -630,6 +648,7 @@ function boot() {
 
   loadHome(0);
   layoutOffset();
+  measureArHero();
   points.position.y = liftFor(0);
 
   // rebuild the hero once the real webfonts arrive, and when the language flips
@@ -638,6 +657,7 @@ function boot() {
     document.fonts.load(spec, txt).catch(() => []).then(() => {
       clouds[0] = wordmark(txt, spec, heroSpacing(lang));
       if (currentExhibit === 0) loadHome(0);
+      measureArHero();
     });
   }
   document.fonts.ready.then(() => regenHero(pageLang()));
@@ -780,6 +800,7 @@ function boot() {
     renderer.setSize(innerWidth, innerHeight);
     uniforms.uPixelRatio.value = Math.min(devicePixelRatio,2);
     layoutOffset();
+    measureArHero();
   });
 
   console.log('TAKWEEN studio online —', MAXN, 'points/frame; service', exhibits[0].key);
