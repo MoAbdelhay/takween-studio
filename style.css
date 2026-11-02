@@ -493,6 +493,13 @@ html[lang="ar"] .cue-word { font-weight: 400; }
   /* push cards to the lower band so the lifted sculpture reads above them */
   .panel-exhibit { align-items: flex-end; }
   .panel { padding: 6rem 1.3rem 3.5rem; }
+  /* phones: leave a clear band under the top bar for the wordmark */
+  .panel-intro { padding-top: 13rem; padding-bottom: 3rem; }
+  /* phones: each service opens with a clear band for its sculpture, the card
+     starts below it and scrolls up over it; snap to the top so the band shows */
+  .panel-exhibit { padding-top: 44vh; scroll-snap-align: start; }
+  /* cursor hint means nothing on a touchscreen */
+  .intro-note { display: none; }
 }
 
 /* short viewports: tighten the hero so the wordmark keeps its clear band */

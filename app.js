@@ -127,8 +127,6 @@ function boot() {
     const pts = [];
     const m = filled.length/2 || 1;
     const S = 5.2/cw;                       // world units per canvas pixel
-    let maxRow = ch/2;
-    for (let k = 1; k < filled.length; k += 2) if (filled[k] > maxRow) maxRow = filled[k];
     for (let i = 0; i < HERO_N; i++) {
       const k = (Math.random()*m) | 0;
       const X = (filled[k*2]   - cw/2) * S + (Math.random()-0.5)*0.013;
@@ -136,9 +134,7 @@ function boot() {
       // a gentle standing wave in depth so the flat glyphs catch parallax
       pts.push(X, Y, Math.sin(X*1.6)*0.07 + (Math.random()-0.5)*0.09);
     }
-    const cloud = toCloud(pts);
-    cloud.bottom = -(maxRow - ch/2) * S;    // lowest glyph point, world units
-    return cloud;
+    return toCloud(pts);
   }
   const heroFont = l => l === 'ar' ? '700 205px "Cairo", sans-serif' : '500 172px "Space Grotesk", sans-serif';
   const heroText = l => l === 'ar' ? 'تكوين' : 'TAKWEEN';
@@ -510,10 +506,11 @@ function boot() {
     uPixelRatio:{ value: Math.min(devicePixelRatio,2) },
     uSize:     { value: 2.2 },
     uRotY:     { value: 0 },
+    uFit:      { value: 1 },        // shrinks sculptures to fit small screens
   };
 
   const vert = /* glsl */`
-    uniform float uTime, uAssembly, uFocus, uSwirl, uPixelRatio, uSize, uRotY;
+    uniform float uTime, uAssembly, uFocus, uSwirl, uPixelRatio, uSize, uRotY, uFit;
     uniform vec3  uMouse;
     attribute vec3 aHome;
     attribute vec3 aDust;
@@ -537,7 +534,7 @@ function boot() {
 
       float assembled = clamp(uAssembly, 0.0, 1.0);
       float stagger = smoothstep(0.0, 1.0, (assembled - aSeed*0.35) / 0.65);
-      vec3 home = aHome;
+      vec3 home = aHome * uFit;
       vec3 dust = aDust;
 
       // dust drifts on the curl field continuously
@@ -613,24 +610,71 @@ function boot() {
   // the sculptures sit centred (or lifted above the card on narrow screens).
   // points.position.y eases toward this in the render loop.
   const baseLift = (idx) => (isNarrow() ? 1.35 : 0) + exhibits[idx].lift * (isNarrow() ? 0.45 : 1);
-  // The Arabic intro has no headline, so its copy block is shorter. Measure
-  // where the description starts and sit the wordmark a fixed gap above it,
-  // so the spacing is the same on every screen size. Never raise it higher
-  // than the default berth.
-  const AR_HERO_GAP = 28;                   // px between glyphs and description
-  let arHeroLift = null;
-  function measureArHero() {
-    arHeroLift = null;
-    if (pageLang() !== 'ar' || clouds[0].bottom == null) return;
-    const lede = document.querySelector('.intro-lede');
-    if (!lede) return;
-    let top = 0;
-    for (let el = lede; el; el = el.offsetParent) top += el.offsetTop;
-    const worldPerPx = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / innerHeight;
-    const targetY = (innerHeight / 2 - (top - AR_HERO_GAP)) * worldPerPx;
-    arHeroLift = Math.min(baseLift(0), targetY - clouds[0].bottom);
+
+  // ---- fit each sculpture to the screen -------------------------------------
+  // World units visible at z=0 come from the camera, so everything below is
+  // measured against the real viewport instead of fixed numbers.
+  const viewH = () => 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const worldPerPx = () => viewH() / innerHeight;
+  const pxToWorldY = (px) => (innerHeight / 2 - px) * worldPerPx();
+  function bounds(c) {
+    if (!c.b) {
+      let r = 0, minY = Infinity, maxY = -Infinity;
+      for (let i = 0; i < c.n; i++) {
+        const x = c.pos[i*3], y = c.pos[i*3+1], z = c.pos[i*3+2];
+        r = Math.max(r, Math.hypot(x, z));   // spinning: widest at any angle
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+      c.b = { r, minY, maxY };
+    }
+    return c.b;
   }
-  const liftFor = (idx) => (idx === 0 && arHeroLift != null) ? arHeroLift : baseLift(idx);
+  const pageTop = (el) => { let y = 0; for (; el; el = el.offsetParent) y += el.offsetTop; return y; };
+  const visible = (el) => el && getComputedStyle(el).display !== 'none';
+
+  const HERO_GAP = 28;                       // px between wordmark and intro text
+  let layout = [];                           // per exhibit: { lift, fit }
+  function measureLayout() {
+    const narrow = isNarrow();
+    const visW = viewH() * camera.aspect;
+    const topbar = document.querySelector('.topbar');
+    const barBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
+    const panels = [...document.querySelectorAll('.panel-intro, .panel-exhibit')];
+    layout = exhibits.map((ex, idx) => {
+      const b = bounds(clouds[idx]);
+      let fit = 1, lift = baseLift(idx);
+      if (idx === 0) {
+        // wordmark: keep it inside the screen width, then sit it just above
+        // the first line of intro text (headline in English, description in Arabic)
+        if (narrow) fit = Math.min(1, (visW * 0.88) / (2 * b.r));
+        const first = [...document.querySelectorAll('.intro-title, .intro-lede')].find(visible);
+        if (first) {
+          const target = pxToWorldY(pageTop(first) - HERO_GAP) - b.minY * fit;
+          const ceiling = pxToWorldY(barBottom + 12) - b.maxY * fit;   // stay under the top bar
+          lift = Math.min(baseLift(0), target, ceiling);
+        }
+      } else if (narrow) {
+        // phones: the card fills the lower screen, so fit the sculpture into
+        // the band between the top bar and the top of the card
+        const panel = panels[idx], card = panel && panel.querySelector('.plaque');
+        let bandTop = barBottom + 12, bandBottom = innerHeight * 0.42;
+        if (panel && card) {
+          // phones snap each panel to the top (see style.css), so the card's
+          // top on screen is its offset inside the panel
+          const cardTop = pageTop(card) - pageTop(panel);
+          bandBottom = Math.max(cardTop - 12, bandTop + innerHeight * 0.26);
+        }
+        const bandH = (bandBottom - bandTop) * worldPerPx();
+        fit = Math.min(1, (visW * 0.8) / (2 * b.r), (bandH * 0.92) / (b.maxY - b.minY));
+        const mid = pxToWorldY((bandTop + bandBottom) / 2);
+        lift = mid - ((b.maxY + b.minY) / 2) * fit;
+      }
+      return { lift, fit };
+    });
+    plinth.visible = !narrow;                // the floor glow only reads on wide screens
+  }
+  const liftFor = (idx) => layout[idx] ? layout[idx].lift : baseLift(idx);
+  const fitFor  = (idx) => layout[idx] ? layout[idx].fit  : 1;
   function layoutOffset() {
     plinth.position.set(0, isNarrow() ? 1.35 : 0, 0);
   }
@@ -648,8 +692,9 @@ function boot() {
 
   loadHome(0);
   layoutOffset();
-  measureArHero();
+  measureLayout();
   points.position.y = liftFor(0);
+  uniforms.uFit.value = fitFor(0);
 
   // rebuild the hero once the real webfonts arrive, and when the language flips
   function regenHero(lang) {
@@ -657,7 +702,7 @@ function boot() {
     document.fonts.load(spec, txt).catch(() => []).then(() => {
       clouds[0] = wordmark(txt, spec, heroSpacing(lang));
       if (currentExhibit === 0) loadHome(0);
-      measureArHero();
+      measureLayout();
     });
   }
   document.fonts.ready.then(() => regenHero(pageLang()));
@@ -774,10 +819,12 @@ function boot() {
     uniforms.uMouse.value.copy(stirPoint);
     uniforms.uRotY.value = spinAngle;
     uniforms.uTint.value.lerp(targetTint, Math.min(dt*2.5,1));
-    uniforms.uSize.value = 2.2;
+    // finer grains when a sculpture is shrunk, so it doesn't blow out to a blob
+    uniforms.uSize.value = 2.2 * (0.45 + 0.55 * uniforms.uFit.value);
 
     // ease the cloud toward its exhibit's vertical berth
     points.position.y += (liftFor(currentExhibit) - points.position.y) * Math.min(dt*2.5, 1);
+    uniforms.uFit.value += (fitFor(currentExhibit) - uniforms.uFit.value) * Math.min(dt*2.5, 1);
 
     // gentle camera breathing + parallax toward cursor
     const px = (ndc.x||0), py = (ndc.y||0);
@@ -800,7 +847,7 @@ function boot() {
     renderer.setSize(innerWidth, innerHeight);
     uniforms.uPixelRatio.value = Math.min(devicePixelRatio,2);
     layoutOffset();
-    measureArHero();
+    measureLayout();
   });
 
   console.log('TAKWEEN studio online —', MAXN, 'points/frame; service', exhibits[0].key);
