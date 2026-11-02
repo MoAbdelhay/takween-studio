@@ -207,7 +207,7 @@ body.focusing .focus-hud { opacity: 1; transform: translate(-50%, 0); }
   font-size: clamp(1.8rem, 4.4vw, 3.3rem); line-height: 1.14;
   color: var(--bone); letter-spacing: -0.02em; margin-bottom: 1.1rem;
 }
-html[lang="ar"] .intro-title { line-height: 1.5; font-weight: 400; }
+html[lang="ar"] .intro-title { display: none; }
 .intro-title .line { display: inline; }
 .intro-title .ital { font-style: italic; color: var(--accent); font-weight: 400; }
 .intro-lede {
