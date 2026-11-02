@@ -608,7 +608,11 @@ function boot() {
   // vertical offset per exhibit: the hero wordmark floats in the upper band,
   // the sculptures sit centred (or lifted above the card on narrow screens).
   // points.position.y eases toward this in the render loop.
-  const liftFor = (idx) => (isNarrow() ? 1.35 : 0) + exhibits[idx].lift * (isNarrow() ? 0.45 : 1);
+  // the Arabic intro has no headline, so its copy block is shorter:
+  // drop the wordmark closer to it instead of leaving a gap
+  const AR_HERO_LIFT = 0.78;
+  const heroScale = (idx) => (idx === 0 && pageLang() === 'ar') ? AR_HERO_LIFT : 1;
+  const liftFor = (idx) => (isNarrow() ? 1.35 : 0) + exhibits[idx].lift * heroScale(idx) * (isNarrow() ? 0.45 : 1);
   function layoutOffset() {
     plinth.position.set(0, isNarrow() ? 1.35 : 0, 0);
   }
