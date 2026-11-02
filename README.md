@@ -14,7 +14,7 @@ drifting light as you scroll.
 | II | 3D Building Design (Revit · Lumion · 3ds Max) | 1999 SAR |
 | III | The Complete Set — 2D + 3D | 1799 SAR |
 | IV | Data Analysis & Visualization | 299 SAR |
-| V | Web Development | 1999 SAR |
+| V | App & Web Development | 1999 SAR |
 
 ## Features
 
