@@ -449,11 +449,11 @@ function boot() {
   // =========================================================================
   const exhibits = [
     { key:'intro', hero: true,  lift: 1.22, rot:{ mode:'sway', amp:0.14, speed:0.22 }, tint:[0.84,1.00,0.95] },
+    { key:'globe', gen: globe, h: 3.00, lift: 0, rot:{ mode:'spin', speed:0.14 },           tint:[0.82,0.87,1.00] },
     { key:'plan',  gen: plan,  h: 2.45, lift: 0, rot:{ mode:'sway', amp:0.30, speed:0.30 }, tint:[0.78,0.88,1.00] },
     { key:'tower', gen: tower, h: 3.20, lift: 0, rot:{ mode:'spin', speed:0.10 },           tint:[0.95,0.90,0.80] },
     { key:'combo', gen: combo, h: 3.10, lift: 0, rot:{ mode:'spin', speed:0.08 },           tint:[0.96,0.86,0.72] },
     { key:'chart', gen: chart, h: 2.90, lift: 0, rot:{ mode:'sway', amp:0.42, speed:0.26 }, tint:[0.76,0.96,0.86] },
-    { key:'globe', gen: globe, h: 3.00, lift: 0, rot:{ mode:'spin', speed:0.14 },           tint:[0.82,0.87,1.00] },
   ];
   const TOTAL = exhibits.length - 1;          // services only; intro is 00
 

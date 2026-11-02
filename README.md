@@ -10,11 +10,11 @@ drifting light as you scroll.
 
 | # | Service | Price |
 |---|---------|-------|
-| I | 2D Technical Drawings (AutoCAD — architectural / mechanical / electrical + lighting) | 999 SAR |
-| II | 3D Building Design (Revit · Lumion · 3ds Max) | 1999 SAR |
-| III | The Complete Set — 2D + 3D | 1799 SAR |
-| IV | Data Analysis & Visualization | 299 SAR |
-| V | App & Web Development | 1999 SAR |
+| I | App & Web Development | 1999 SAR |
+| II | 2D Technical Drawings (AutoCAD — architectural / mechanical / electrical + lighting) | 999 SAR |
+| III | 3D Building Design (Revit · Lumion · 3ds Max) | 1999 SAR |
+| IV | The Complete Set — 2D + 3D | 1799 SAR |
+| V | Data Analysis & Visualization | 299 SAR |
 
 ## Features
 
