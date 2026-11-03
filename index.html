@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -336,7 +336,8 @@
 
   var saved = null;
   try { saved = localStorage.getItem('takween-lang'); } catch (e) {}
-  if (saved === 'ar') apply('ar');
+  // Arabic is the default; English only for visitors who switched to it
+  apply(saved === 'en' ? 'en' : 'ar');
 })();
 </script>
 
