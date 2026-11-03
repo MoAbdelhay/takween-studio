@@ -646,7 +646,7 @@ function boot() {
       if (idx === 0) {
         // wordmark: keep it inside the screen width, then sit it just above
         // the first line of intro text (headline in English, description in Arabic)
-        if (narrow) fit = Math.min(1, (visW * 0.88) / (2 * b.r));
+        if (narrow) fit = Math.min(1, (visW * 0.78) / (2 * b.r));
         const first = [...document.querySelectorAll('.intro-title, .intro-lede')].find(visible);
         if (first) {
           const target = pxToWorldY(pageTop(first) - HERO_GAP) - b.minY * fit;
@@ -665,7 +665,11 @@ function boot() {
           bandBottom = Math.max(cardTop - 12, bandTop + innerHeight * 0.26);
         }
         const bandH = (bandBottom - bandTop) * worldPerPx();
-        fit = Math.min(1, (visW * 0.8) / (2 * b.r), (bandH * 0.92) / (b.maxY - b.minY));
+        // a spinning sculpture's near side swings toward the camera and looks
+        // bigger, so solve for the scale where that near edge still fits
+        const D = camera.position.z, w = (visW * 0.8) / 2;
+        const widthFit = (w * D) / (b.r * (D + w));
+        fit = Math.min(1, widthFit, (bandH * 0.92) / (b.maxY - b.minY));
         const mid = pxToWorldY((bandTop + bandBottom) / 2);
         lift = mid - ((b.maxY + b.minY) / 2) * fit;
       }
@@ -827,7 +831,9 @@ function boot() {
     uniforms.uFit.value += (fitFor(currentExhibit) - uniforms.uFit.value) * Math.min(dt*2.5, 1);
 
     // gentle camera breathing + parallax toward cursor
-    const px = (ndc.x||0), py = (ndc.y||0);
+    // no cursor parallax on phones: a touch would swing the camera and push
+    // the sculpture off the edge of the narrow screen
+    const px = isNarrow() ? 0 : (ndc.x||0), py = isNarrow() ? 0 : (ndc.y||0);
     camera.position.x += (px*0.5 - camera.position.x) * Math.min(dt*1.6,1);
     camera.position.y += (py*0.35 - camera.position.y) * Math.min(dt*1.6,1);
     camera.lookAt(0,0,0);
